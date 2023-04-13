@@ -1,45 +1,45 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 ## Potential for allocative harm in an environmental justice data tool
+
 
 <img src="./figs/quantreg.png" width="750px" style="display: block; margin: auto;" />
 
-This repository,
-[`allocative_harm`](https://github.com/etchin/allocative_harm), contains
-reproducible code for our manuscript, “Potential for allocative harm in
-an environmental justice data tool”.
+This repository, [`allocative_harm`](https://github.com/etchin/allocative_harm), contains reproducible code for our manuscript, "Potential for allocative harm in an environmental justice data tool".
 
 ## Details
 
-All code can be found in the `./code` directory and must be run in order
-(numerically and alphabetically). Files matching the pattern `00_*R`
-contain functions used by other files. Figures are in the `./figs`
-directory.
+All code can be found in the `./code` directory and must be run in order (numerically and alphabetically). Files matching the pattern `00_*R` contain functions used by other files. Figures are in the `./figs` directory. 
 
-Due to file size limitations on Github, the files in `./data` and are
-*not* uploaded to this repository. Data urls are located in
-`./code/00_parameters.R` and will be downloaded when running
-`./code/01_download_data.R` unless otherwise noted. All data necessary
-to run these analyses can be found in this
-[`data repository`](https://doi.org/10.7910/DVN/EVWNC2).
+Due to file size limitations on Github, the files in `./data` and are *not* uploaded to this repository. Data urls are located in `./code/00_parameters.R` and will be downloaded when running `./code/01_download_data.R` unless otherwise noted. All data necessary to run these analyses can be found in this [`data repository`](https://doi.org/10.7910/DVN/EVWNC2).
 
 ## Authors (alphabetical)
+-   [Elizabeth T. Chin](https://etchin.github.io/)
+-   [Daniel E. Ho](https://dho.stanford.edu/)
+-   [Benjamin Q. Huynh](https://benhuynh.github.io/)
+-   [Mathew V. Kiang](https://mathewkiang.com/)
+-   [Allison Koenecke](https://koenecke.infosci.cornell.edu/)
+-   [Derek Ouyang](https://derekouyang.com/)
+-   [David H Rehkopf](https://profiles.stanford.edu/david-rehkopf)
 
-- [Elizabeth T. Chin](https://etchin.github.io/)
-- [Daniel E. Ho](https://dho.stanford.edu/)
-- [Benjamin Q. Huynh](https://benhuynh.github.io/)
-- [Mathew V. Kiang](https://mathewkiang.com/)
-- [Allison Koenecke](https://koenecke.infosci.cornell.edu/)
-- [Derek Ouyang](https://derekouyang.com/)
-- [David H Rehkopf](https://profiles.stanford.edu/david-rehkopf)
+
 
 ## Package management
 
-We use [`renv`](https://rstudio.github.io/renv/index.html), but below we
-also include the relevant information to ensure reproducibility.
+We use [`renv`](https://rstudio.github.io/renv/index.html), but below we also include the relevant information to ensure reproducibility.
 
-``` r
+```{r, eval=FALSE}
 > sessioninfo::session_info(pkgs = "attached")
 ─ Session info ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value

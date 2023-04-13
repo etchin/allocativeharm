@@ -1,0 +1,6 @@
+# Ignore everything in this directory
+*
+# Except for this file
+!.gitignore
+!processed
+!california_state_assembly_district_parties_03_23.csv
