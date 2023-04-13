@@ -7,8 +7,8 @@
 
 This repository,
 [`allocative_harm`](https://github.com/etchin/allocative_harm), contains
-reproducible code for our manuscript, “Potential for allocative harm in
-an environmental justice data tool”.
+reproducible code for our manuscript,
+[`Potential for allocative harm in an environmental justice data tool`](http://arxiv.org/abs/2304.05603).
 
 ## Details
 

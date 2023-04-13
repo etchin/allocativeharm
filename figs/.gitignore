@@ -2,3 +2,4 @@
 *
 # Except for this file
 !.gitignore
+!quantreg.png
