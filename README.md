@@ -6,7 +6,7 @@
 <img src="./figs/quantreg.png" width="750px" style="display: block; margin: auto;" />
 
 This repository,
-[`allocative_harm`](https://github.com/etchin/allocative_harm), contains
+[`allocativeharm`](https://github.com/etchin/allocativeharm), contains
 reproducible code for our manuscript,
 [`Potential for allocative harm in an environmental justice data tool`](http://arxiv.org/abs/2304.05603).
 
