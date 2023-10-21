@@ -8,6 +8,7 @@ library(censusapi)
 library(tigris)
 library(sf)
 source(here::here("code","00_parameters.R"))
+source(here::here("code","00_utils.R"))
 
 ces4 <- read_csv(here::here("data","processed","ces.csv"))
 
@@ -301,8 +302,10 @@ print(paste0("We compare this to the CHAS measure and find a correlation of ", c
 
 
 # Finalizing CBG-level data
-
+## Filter to only include census tracts where there is a ces score
 cbg_results <- census %>% 
+  mutate(`Census Tract` = as.numeric(paste0(state, county, tract))) %>%
+  inner_join(ces4 %>% filter(!is.na(`CES 4.0 Score`)) %>% select(`Census Tract`)) %>%
   mutate(
     cbg =
       paste0(state,county,tract,block_group)
@@ -337,55 +340,62 @@ cbg_results <- census %>%
       educational_attainment:unemployment,
       ~(percent_rank(.)*100),
       # ~(./max(.,na.rm=T)*100),
-      .names = "{col}_perc"
+      .names = "{col}_Pctl"
     )
-  ) %>% 
+  ) %>%
   mutate(
-    socioeconomic_factors = rowMeans(select(.,ends_with("perc")), na.rm=T)
+    tract = substr(cbg, 1,11) %>% as.numeric(),
+    socioeconomic_factors = rowMeans(select(.,ends_with("Pctl")), na.rm=T)
   )
+
+#compare blocks
+ces4_blocks <- ces4 %>% mutate(tract = `Census Tract`, ces4 = `CES 4.0 Percentile`) %>%
+  right_join(cbg_results) %>%
+  mutate(`Census Tract` = cbg) # Temporarily renaming `Census Tract` as cbg as calculateDacScore(.) function requires Census Tract variable
+
+final_blocks <- calculateDacScore(ces4_blocks,
+                                 sesVarsNew = c("educational_attainment","housing_burden","linguistic_isolation","poverty","unemployment"),
+                                 suffix = "_Pctl") %>%
+  rename(ces4_new = percentile, dac_new = dac) %>%
+  left_join(ces4_blocks %>% transmute(Census.Tract = `Census Tract`, ces4)) %>%
+  rename(cbg = Census.Tract) %>%
+  mutate(`Census Tract` = substr(cbg, 1,11),
+         dac = ces4 >= 75,
+         dac_change = case_when(
+           ces4 >= 75 & ces4_new < 75 ~ "Out",
+           ces4 < 75 & ces4_new >= 75 ~ "In",
+           TRUE ~ "Same"
+         ))
+
+# Summary stats
+print("Summary statistics:")
+print(paste0("Number of blocks that change designation: ", sum(final_blocks$dac_change != "Same")))
+print(paste0("Percent: ", round(sum(final_blocks$dac_change != "Same")/nrow(final_blocks)*100, digits = 1), "%"))
 
 # Weighted mean 
 
-# Next, to convert back to tract values, we do a weighted mean of CBG values, weighted by CBG population, then convert to percentile
-
 tract_results <- cbg_results %>% 
-  mutate(
-    tract = substr(cbg, 1,11) %>% as.numeric()
-  ) %>% 
   group_by(tract) %>% 
   summarize(
     socioeconomic_factors = weighted.mean(socioeconomic_factors, pop,na.rm=T)
-  ) %>% 
-  mutate(
-    socioeconomic_factors = percent_rank(socioeconomic_factors)*100
-  )
+  ) %>% ungroup() %>%
+  mutate(socioeconomic_factors_Pctl = percent_rank(socioeconomic_factors) * 100)
+  
 
 # Recalculate CES score
 
 # Now we can follow the standard procedure to reproduce the full CES score.
 
-final <- tract_results %>% 
-  left_join(
-    ces4 %>% transmute(
-      tract = `Census Tract`,
-      ces4 = `CES 4.0 Percentile`,
-      pollution_burden_score = `Pollution Burden Score`,
-      sensitive_population_score = rowMeans(select(.,`Asthma_Pctl`,`LowBirthWeight_Pctl`,`CardiovascularDisease_Pctl`),na.rm=T)
-    )
-  ) %>% 
-  filter(!is.na(ces4)) %>% 
-  mutate(
-    population_score_unscaled = rowMeans(select(.,sensitive_population_score,socioeconomic_factors), na.rm=T),
-    population_score_unscaled = ifelse(population_score_unscaled==0,NA,population_score_unscaled),
-    population_score_scaled = population_score_unscaled/max(population_score_unscaled,na.rm=T)*10,
-    ces4_new = pollution_burden_score*population_score_scaled,
-    ces4_new = (percent_rank(ces4_new)*100) %>% round(2),
-    dac_change = case_when(
-      ces4 >= 75 & ces4_new < 75 ~ "Out",
-      ces4 < 75 & ces4_new >= 75 ~ "In",
-      TRUE ~ "Same"
-    )
-  )
+final <- calculateDacScore(ces4 %>% left_join(tract_results, by = c("Census Tract" = "tract")),
+                           sesVarsNew = c("socioeconomic_factors"),
+                           suffix = "_Pctl") %>%
+  rename(ces4_new = percentile) %>%
+  left_join(ces4 %>% transmute(Census.Tract = `Census Tract`, ces4 = `CES 4.0 Percentile`)) %>%
+  mutate(dac_change = case_when(
+    ces4 >= 75 & ces4_new < 75 ~ "Out",
+    ces4 < 75 & ces4_new >= 75 ~ "In",
+    TRUE ~ "Same"
+  ))
 
 write_csv(final, here::here("data","processed","final_cbg_model_ces4.csv"))
 

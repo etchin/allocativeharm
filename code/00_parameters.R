@@ -36,7 +36,7 @@ url_designation <- "https://www.arb.ca.gov/cc/capandtrade/auctionproceeds/ccidoc
 
 ## Housing burden
 url_hb <- "https://www.huduser.gov/portal/datasets/il/il17/Section8-FY17.xlsx"
-url_chas <- "https://www.huduser.gov/PORTAL/datasets/cp.html#2006-2019_data"
+url_chas <- "https://www.huduser.gov/PORTAL/datasets/cp.html#2006-2020_data"
 finame_chas <- here::here("data","2013thru2017-140-csv","140","Table8.csv")
 
 #Variable names
