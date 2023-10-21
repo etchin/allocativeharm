@@ -416,8 +416,8 @@ ggplot(
 
 final_cbg_model_ces4 <- final
 plotDF <- read_csv(here::here("data","processed","sensitivityPlotDF.csv"))
-plotDF2 <- plotDF %>% left_join(final_cbg_model_ces4 %>% select(tract,ces4_new),
-                                by=c("Census.Tract"="tract"))
+plotDF2 <- plotDF %>% left_join(final_cbg_model_ces4 %>% select(Census.Tract,ces4_new),
+                                by=c("Census.Tract"))
 plotDF2 <- plotDF2 %>% 
   rowwise() %>% 
   mutate(lower = min(lower,ces4_new),
