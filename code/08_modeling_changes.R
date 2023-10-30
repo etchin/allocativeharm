@@ -192,18 +192,18 @@ g <- ggplot(plotPred_long %>%
   geom_errorbar(data=plotPred %>% filter(x %in% range2show),
                 aes(x=x, ymin=range0.025, ymax=range0.975), color = pal[1], linetype = "solid", width = 1) +
   geom_text(data=plotPred %>% filter(x %in% range2show),
-            aes(label = paste0(x, "th\npercentile\nΔ ", round(range0.975-range0.025)), y = range0.975, x=x), vjust = -.5, color = pal[1]) +
+            aes(label = paste0(x, "th\npercentile\nΔ ", round(range0.975-range0.025)), y = range0.975, x=x), vjust = -.25, color = pal[1], size = 4.75) +
   scale_y_continuous("Alternative Model Scores", breaks = seq(0,100,10), expand = c(0,0)) +
   geom_hline(yintercept=75, linetype="longdash", color = pal[2], linewidth = .7) +
   scale_x_continuous("Original Model Scores", breaks = seq(0,100,10), expand = c(0,0)) +
   scale_fill_manual(NULL, values = pal[3:4]) +
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
   theme(plot.margin = margin(t = 2.5, r = 1, l = 0.25, b = 0.25, unit = "cm"),
         legend.position=c(0.88, 0.15)) +
   guides(fill = guide_legend(override.aes = list(alpha=0.8))) +
   coord_cartesian(clip = "off")
 
-ggsave(here::here("figs","quantreg.pdf"), g, device = cairo_pdf, width = 10, height = 10)
+ggsave(here::here("figs","quantreg.pdf"), g, device = cairo_pdf, width = 12, height = 12)
 
 numTracts <- nrow(plotDF)
 
