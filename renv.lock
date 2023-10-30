@@ -2222,24 +2222,6 @@
       ],
       "Hash": "1cf5a54cfc5dcb0b84037acfd93cbca7"
     },
-    "patchwork": {
-      "Package": "patchwork",
-      "Version": "1.1.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "cli",
-        "ggplot2",
-        "grDevices",
-        "graphics",
-        "grid",
-        "gtable",
-        "rlang",
-        "stats",
-        "utils"
-      ],
-      "Hash": "c5754106c02e8e019941100c81149431"
-    },
     "pbapply": {
       "Package": "pbapply",
       "Version": "1.7-0",

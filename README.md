@@ -22,7 +22,11 @@ Due to file size limitations on Github, the files in `./data` and are
 `./code/00_parameters.R` and will be downloaded when running
 `./code/01_download_data.R` unless otherwise noted. All data necessary
 to run these analyses can be found in this
-[`data repository`](https://doi.org/10.7910/DVN/EVWNC2).
+[`data repository`](https://doi.org/10.7910/DVN/EVWNC2). Note that the
+data repository automatically changes the extension for some files to
+the `.tab` format. All files with the `.tab` format should be renamed to
+have the `.csv` extension, which reflects their original extension when
+downloaded from their original urls.
 
 ## Authors (alphabetical)
 
@@ -97,7 +101,6 @@ nortest      * 1.0-4      2015-07-30 [?] CRAN (R 4.2.3)
 np           * 0.60-17    2023-03-13 [?] CRAN (R 4.2.3)
 numDeriv     * 2016.8-1.1 2019-06-06 [?] CRAN (R 4.2.3)
 optimx       * 2022-4.30  2022-05-10 [?] CRAN (R 4.2.3)
-patchwork    * 1.1.3      2023-08-14 [?] CRAN (R 4.2.3)
 pbapply      * 1.7-0      2023-01-13 [?] CRAN (R 4.2.3)
 pROC         * 1.18.0     2021-09-03 [?] CRAN (R 4.2.3)
 purrr        * 1.0.1      2023-01-10 [?] CRAN (R 4.2.3)
@@ -109,7 +112,6 @@ readr        * 2.1.4      2023-02-10 [?] CRAN (R 4.2.3)
 readxl       * 1.4.2      2023-02-09 [?] CRAN (R 4.2.3)
 sandwich     * 3.0-2      2022-06-15 [?] CRAN (R 4.2.3)
 scales       * 1.2.1      2022-08-20 [?] CRAN (R 4.2.3)
-sf           * 1.0-14     2023-07-11 [?] CRAN (R 4.2.3)
 stringr      * 1.5.0      2022-12-02 [?] CRAN (R 4.2.3)
 summarytools * 1.0.1      2022-05-20 [?] CRAN (R 4.2.3)
 survival     * 3.5-3      2023-02-12 [?] CRAN (R 4.2.3)
