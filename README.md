@@ -1,14 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-## Potential for allocative harm in an environmental justice data tool
+## Mitigating allocative tradeoffs and harms in an environmental justice data tool
 
 <img src="./figs/quantreg.png" width="750px" style="display: block; margin: auto;" />
 
 This repository,
 [`allocativeharm`](https://github.com/etchin/allocativeharm), contains
 reproducible code for our manuscript,
-[`Potential for allocative harm in an environmental justice data tool`](http://arxiv.org/abs/2304.05603).
+[`Mitigating allocative tradeoffs and harms in an environmental justice data tool`](http://arxiv.org/abs/2304.05603).
 
 ## Details
 
@@ -80,6 +80,7 @@ ggpp         * 0.5.1      2023-02-03 [?] CRAN (R 4.2.3)
 ggpubr       * 0.6.0      2023-02-10 [?] CRAN (R 4.2.3)
 glmnet       * 4.1-7      2023-03-23 [?] CRAN (R 4.2.3)
 grf          * 2.2.1      2022-12-14 [?] CRAN (R 4.2.3)
+here         * 1.0.1      2020-12-13 [?] CRAN (R 4.2.3)
 lattice      * 0.20-45    2021-09-22 [?] CRAN (R 4.2.3)
 lmtest       * 0.9-40     2022-03-21 [?] CRAN (R 4.2.3)
 lqr          * 5.0        2022-08-15 [?] CRAN (R 4.2.3)
@@ -96,9 +97,11 @@ nortest      * 1.0-4      2015-07-30 [?] CRAN (R 4.2.3)
 np           * 0.60-17    2023-03-13 [?] CRAN (R 4.2.3)
 numDeriv     * 2016.8-1.1 2019-06-06 [?] CRAN (R 4.2.3)
 optimx       * 2022-4.30  2022-05-10 [?] CRAN (R 4.2.3)
+patchwork    * 1.1.3      2023-08-14 [?] CRAN (R 4.2.3)
 pbapply      * 1.7-0      2023-01-13 [?] CRAN (R 4.2.3)
 pROC         * 1.18.0     2021-09-03 [?] CRAN (R 4.2.3)
 purrr        * 1.0.1      2023-01-10 [?] CRAN (R 4.2.3)
+qgam         * 1.3.4      2021-11-22 [?] CRAN (R 4.2.3)
 rankdist     * 1.1.4      2019-07-27 [?] CRAN (R 4.2.3)
 rdd          * 0.57       2016-03-14 [?] CRAN (R 4.2.3)
 rddtools     * 1.6.0      2022-01-10 [?] CRAN (R 4.2.3)
@@ -106,10 +109,11 @@ readr        * 2.1.4      2023-02-10 [?] CRAN (R 4.2.3)
 readxl       * 1.4.2      2023-02-09 [?] CRAN (R 4.2.3)
 sandwich     * 3.0-2      2022-06-15 [?] CRAN (R 4.2.3)
 scales       * 1.2.1      2022-08-20 [?] CRAN (R 4.2.3)
-sf           * 1.0-12     2023-03-19 [?] CRAN (R 4.2.3)
+sf           * 1.0-14     2023-07-11 [?] CRAN (R 4.2.3)
 stringr      * 1.5.0      2022-12-02 [?] CRAN (R 4.2.3)
 summarytools * 1.0.1      2022-05-20 [?] CRAN (R 4.2.3)
 survival     * 3.5-3      2023-02-12 [?] CRAN (R 4.2.3)
+testthat     * 3.1.7      2023-03-12 [?] CRAN (R 4.2.3)
 tibble       * 3.2.1      2023-03-20 [?] CRAN (R 4.2.3)
 tidycensus   * 1.3.2      2023-01-30 [?] CRAN (R 4.2.3)
 tidyr        * 1.3.0      2023-01-24 [?] CRAN (R 4.2.3)

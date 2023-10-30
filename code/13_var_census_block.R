@@ -4,9 +4,8 @@
 library(tidyverse)
 library(readxl)
 library(readr)
-library(censusapi)
 library(tigris)
-library(sf)
+library(censusapi)
 source(here::here("code","00_parameters.R"))
 source(here::here("code","00_utils.R"))
 
@@ -52,7 +51,7 @@ census <- counties %>%
     
   })
 
-print("For housing burden, we don't have access to the exact same housing burden data CalEnviroScreen uses at the tract-level, CHAS, so we create a close approximation using available ACS data. Specifically, we sepraately count housing-burdened renters and housing-burdened owners.")
+print("For housing burden, we don't have access to the exact same housing burden data CalEnviroScreen uses at the cbg-level, so we create a close approximation using available ACS data. Specifically, we separately count housing-burdened renters and housing-burdened owners.")
 
 print("For renters, B25074 gives us a close measure of burden but for income tiers that don't match the exact definition of 80% AMI in each county. So, we identify the tier that contains the 80% AMI definition for each county and count all renters up to and including that income tier.")
 print(paste0("We download income limits for each County from ", url_hb))
@@ -260,26 +259,6 @@ housing_burden <- counties %>%
     
   })
 
-chas <- read_csv(finame_chas)
-
-chas_clean <- chas %>% 
-  filter(st == "06") %>% 
-  transmute(
-    GEOID = paste0(st,cnty,tract),
-    total = T8_est1,
-    burdened = (
-      T8_est10+
-        T8_est23+
-        T8_est36+
-        T8_est49+
-        T8_est76+
-        T8_est89+
-        T8_est102+
-        T8_est115
-    ),
-    perc_burdened = burdened/total
-  )
-
 housing_burden_tract <- housing_burden %>% 
   mutate(tract = substr(cbg,1,11)) %>% 
   select(-cbg) %>% 
@@ -291,14 +270,15 @@ housing_burden_tract <- housing_burden %>%
     perc_lowinc_burdened = (own_lowinc_burdened + rent_lowinc_burdened)/(own_total + rent_total)
   )
 
-compare <- chas_clean %>% 
-  select(tract = GEOID, CHAS_perc = perc_burdened) %>% 
+compare <- ces4 %>% 
+  transmute(tract = paste0("0",`Census Tract`), ces_perc = HousingBurden/100) %>% 
   left_join(
     housing_burden_tract
   ) %>% 
-  filter(!is.na(CHAS_perc), !is.na(perc_lowinc_burdened))
+  filter(!is.na(ces_perc))
 
-print(paste0("We compare this to the CHAS measure and find a correlation of ", cor(compare$CHAS_perc, compare$perc_lowinc_burdened)))
+print(paste0("We compare this to the CES measure and find a correlation of ", cor(compare$ces_perc, compare$perc_lowinc_burdened, use = "complete.obs")))
+
 
 
 # Finalizing CBG-level data
@@ -339,7 +319,6 @@ cbg_results <- census %>%
     across(
       educational_attainment:unemployment,
       ~(percent_rank(.)*100),
-      # ~(./max(.,na.rm=T)*100),
       .names = "{col}_Pctl"
     )
   ) %>%
@@ -377,9 +356,8 @@ print(paste0("Percent: ", round(sum(final_blocks$dac_change != "Same")/nrow(fina
 tract_results <- cbg_results %>% 
   group_by(tract) %>% 
   summarize(
-    socioeconomic_factors = weighted.mean(socioeconomic_factors, pop,na.rm=T)
-  ) %>% ungroup() %>%
-  mutate(socioeconomic_factors_Pctl = percent_rank(socioeconomic_factors) * 100)
+    socioeconomic_factors_Pctl = weighted.mean(socioeconomic_factors, pop,na.rm=T) # Adding _Pctl at end to reflect input calculateDacScore expects
+  ) %>% ungroup()
   
 
 # Recalculate CES score
@@ -417,17 +395,32 @@ ggplot(
 final_cbg_model_ces4 <- final
 plotDF <- read_csv(here::here("data","processed","sensitivityPlotDF.csv"))
 plotDF2 <- plotDF %>% left_join(final_cbg_model_ces4 %>% select(Census.Tract,ces4_new),
-                                by=c("Census.Tract"))
-plotDF2 <- plotDF2 %>% 
+                                by=c("Census.Tract")) %>%
   rowwise() %>% 
   mutate(lower = min(lower,ces4_new),
          upper = max(upper,ces4_new))
-print(paste0("Number that would gain funding: ",
-             plotDF2 %>% filter(upper>=75 & percentile<75) %>% nrow()
-             ))
-print(paste0("Number that would lose funding: ",
-             plotDF2 %>% filter(lower<75 & percentile>=75) %>% nrow() 
-))
+
+plotDF_cbg <- plotDF %>%
+  select(Census.Tract, lower, upper, percentile) %>%
+  right_join(final_blocks %>% transmute(Census.Tract = as.numeric(`Census Tract`), cbg, ces4_new)) %>%
+  rowwise() %>% 
+  mutate(lower2 = min(lower,ces4_new),
+         upper2 = max(upper,ces4_new))
+  
+n_gain <- plotDF2 %>% filter(upper>=75 & percentile<75) %>% nrow()
+n_lose <- plotDF2 %>% filter(lower<75 & percentile>=75) %>% nrow()
+print(paste0("% Tracts that would change funding: ", round((n_gain + n_lose) / nrow(plotDF2)*100, 1), "%"))
+
+n_gain_base <- plotDF_cbg %>% filter(upper>=75 & percentile<75) %>% nrow()
+n_lose_base <- plotDF_cbg %>% filter(lower<75 & percentile>=75) %>% nrow()
+n_gain <- plotDF_cbg %>% filter(upper2>=75 & percentile<75) %>% nrow()
+n_lose <- plotDF_cbg %>% filter(lower2<75 & percentile>=75) %>% nrow()
+print(paste0("% CBGs that would change funding without CBG analysis: ", round((n_gain_base + n_lose_base) / nrow(plotDF_cbg)*100, 1), "%"))
+print(paste0("% CBGs that would change funding: ", round((n_gain + n_lose) / nrow(plotDF_cbg)*100, 1), "%"))
+
+
+
+
 
 
 

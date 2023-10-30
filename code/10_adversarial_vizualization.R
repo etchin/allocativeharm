@@ -60,7 +60,7 @@ wDacDF <- subset(cesDF_race,`Census Tract` %in% as.numeric(plotDF_W$Census.Tract
 pocDacDF <- subset(cesDF_race,`Census Tract` %in% as.numeric(plotDF_POC$Census.Tract))
 
 p1 <- plotFairnessDensity(dacDF$pWhiteNH,wDacDF$pWhiteNH,"White",delta=F)
-p2 <- plotFairnessDensity(1-dacDF$pWhiteNH,1-pocDacDF$pWhiteNH,"POC Population",delta=F)
+p2 <- plotFairnessDensity(1-dacDF$pWhiteNH,1-pocDacDF$pWhiteNH,"Racially Minoritized Population",delta=F)
 legend <- get_legend(
   # create some space to the left of the legend
   p1 + theme(legend.box.margin = margin(0, 0, 0, 12)) +
