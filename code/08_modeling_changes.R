@@ -141,7 +141,7 @@ plotDF3 <- plotDF3 %>%
   mutate(d.diff = d.upper - d.lower) %>%
   mutate_at(.vars = vars(d.lower, d.upper, d.median, d.mean, d.diff), .funs = list(L = ~trans.logistic(., 0, 100)))
 
-qu2 = c(0.025, 0.125, 0.875, 0.975)
+qu2 = c(0.025, 0.125, 0.5, 0.875, 0.975)
 
 dof <- 4
 qr.range <- mqgam(d.range~s(d.percentile, k=dof), qu = qu2, data = rbind(plotDF3 %>% mutate(d.range = d.lower_L) %>% select(d.percentile, d.range),
@@ -164,20 +164,22 @@ range2show <- c(5, 25, 50, 75, 95)
 pal <- c("#083566","#E64B35B2","#5e919e","#76b5c5", "#bbdae2")
 
 plotPred_lower <- plotPred %>% 
-  select(x, matches("^range0.(0|1|2)", perl = T)) %>%
+  select(x, matches("^range0.(0|1|2|5)", perl = T)) %>%
   pivot_longer(cols = -x, names_to = "name", values_to = "lower") %>%
   mutate(band = case_when(
     name == "range0.025" ~ 95,
     name == "range0.05" ~ 90,
+    name == "range0.5" ~ 0,
     name == "range0.125" ~ 75,
     name == "range0.25" ~ 50
   )) %>% select(-name)
 plotPred_upper <- plotPred %>% 
-  select(x, matches("^range0.(7|8|9)", perl = T)) %>%
+  select(x, matches("^range0.(5|7|8|9)", perl = T)) %>%
   pivot_longer(cols =-x, names_to = "name", values_to = "upper") %>%
   mutate(band = case_when(
     name == "range0.975" ~ 95,
     name == "range0.95" ~ 90,
+    name == "range0.5" ~ 0,
     name == "range0.875" ~ 75,
     name == "range0.75" ~ 50
   )) %>% select(-name)
@@ -189,18 +191,23 @@ g <- ggplot(plotPred_long %>%
               filter(band %in% c(75, 95))) +
   geom_linerange(data = plotDF, aes(x=percentile,ymin=lower,ymax=upper), alpha=0.3, color = "grey") +
   geom_ribbon(aes(x = x, ymin = lower, ymax = upper, fill = pi, group = pi), color = NA, alpha = 0.4) +
+  geom_hline(yintercept=75, linetype="longdash", color = pal[2], linewidth = .7) +
   geom_errorbar(data=plotPred %>% filter(x %in% range2show),
                 aes(x=x, ymin=range0.025, ymax=range0.975), color = pal[1], linetype = "solid", width = 1) +
+  geom_point(data=plotPred %>% filter(x %in% range2show),
+                aes(x=x, y=range0.5), color = pal[1], size = 3) +
+  geom_line(data=plotPred_long %>% filter(band == 0), aes(x=x,y=lower), color = pal[1]) +
   geom_text(data=plotPred %>% filter(x %in% range2show),
             aes(label = paste0(x, "th\npercentile\nΔ ", round(range0.975-range0.025)), y = range0.975, x=x), vjust = -.25, color = pal[1], size = 4.75) +
   scale_y_continuous("Alternative Model Scores", breaks = seq(0,100,10), expand = c(0,0)) +
-  geom_hline(yintercept=75, linetype="longdash", color = pal[2], linewidth = .7) +
   scale_x_continuous("Original Model Scores", breaks = seq(0,100,10), expand = c(0,0)) +
   scale_fill_manual(NULL, values = pal[3:4]) +
   theme_classic(base_size = 18) +
   theme(plot.margin = margin(t = 2.5, r = 1, l = 0.25, b = 0.25, unit = "cm"),
         legend.position=c(0.88, 0.15)) +
-  guides(fill = guide_legend(override.aes = list(alpha=0.8))) +
+  guides(
+    fill = guide_legend(override.aes = list(alpha=0.8))
+    ) +
   coord_cartesian(clip = "off")
 
 ggsave(here::here("figs","quantreg.pdf"), g, device = cairo_pdf, width = 12, height = 12)
